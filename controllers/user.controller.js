@@ -97,10 +97,31 @@ const loginUser = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            message: "Internal server error in register",
+            message: "Internal server error in login",
             success: false
         });
     }
 }
 
-module.exports = { registerUser, loginUser }
+const userProfile = async (req, res) => {
+    try {
+        const { userId } = req.user;
+
+        const loggedInUser = await User.findById(userId).select("-password");
+
+        return res.status(200).json({
+            message: `Welcome ${loggedInUser.username}`,
+            success: true,
+            userData: loggedInUser
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Internal server error in profile",
+            success: false
+        });
+    }
+}
+
+module.exports = { registerUser, loginUser, userProfile }
